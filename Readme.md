@@ -1,5 +1,9 @@
 # OctoBI Assignment
 
+```
+DataFormatting.py (DataFormatting.ipynb): Notebook used to format data
+```
+
 ## Completed Parts
 
 - [x] Seperate Data in to Different models
