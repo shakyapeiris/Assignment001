@@ -1,0 +1,1 @@
+[{"model": "tests.Award", "fields": {"id": 1, "name": "Participation"}}, {"model": "tests.Award", "fields": {"id": 2, "name": "Credit"}}, {"model": "tests.Award", "fields": {"id": 4, "name": "Distinction"}}, {"model": "tests.Award", "fields": {"id": 5, "name": "High Distinction"}}]
