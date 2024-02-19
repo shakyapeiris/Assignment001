@@ -1,11 +1,17 @@
 #!/usr/bin/env python
 # coding: utf-8
 
+# # Ganison Dataset
+
+# # Import Libraries 
+
 # In[1]:
 
 
 import pandas as pd
 
+
+# Import data from 5 different files and merge them to a single pandas dataframe
 
 # In[2]:
 
@@ -27,11 +33,17 @@ data.head()
 data.info()
 
 
+# ### Format data
+
+# Merge year field and 'Year level' field in to a single year_lvl_name field
+
 # In[4]:
 
 
 data['year_lvl_name'] = data.year.apply(str) + "_" + data['Year Level'].apply(str)
 
+
+# ### Clean data
 
 # In[5]:
 
@@ -78,6 +90,8 @@ data['school_name'].unique()
 data.size
 
 
+# ### Normalize answer field
+
 # In[10]:
 
 
@@ -95,6 +109,8 @@ data['CorrectAnswerID'] = data['Correct Answers'].map(lambda x: get_answer_index
 
 data.head()
 
+
+# ### Normalize names
 
 # In[12]:
 
@@ -130,6 +146,8 @@ data = data.drop(columns=['First Name', 'Last Name'])
 
 data.head()
 
+
+# ## Normalize other fields
 
 # In[17]:
 
@@ -190,6 +208,8 @@ data['AwardID'] = data['award'].map(lambda x: get_award_index(x))
 
 data = data.drop(columns=['award'])
 
+
+# ### Normalize award data, class and assesment area
 
 # In[20]:
 
@@ -297,13 +317,15 @@ print("Class Data:", class_data)
 print("Award Data:", award_data)
 
 
+# ## Write data to JSON files
+
 # In[33]:
 
 
 import json
 
 
-# In[34]:
+# In[59]:
 
 
 def to_json_file(arr, columns, model_name, file_name):
@@ -315,7 +337,7 @@ def to_json_file(arr, columns, model_name, file_name):
             if pd.isna(data[i]):
                 dict[columns[i]] = None
             else:
-                dict[columns[i]] = data[i]
+                dict[columns[i]] = int(data[i]) if type(data[i]) == float else data[i]
         fixture = {
             'model': model_name,
             'fields': dict
@@ -331,37 +353,37 @@ def to_json_file(arr, columns, model_name, file_name):
 # In[35]:
 
 
-to_json_file(student_data, ["id", "name"], "tests.Student", "tests/fixtures/student.json")
+to_json_file(student_data, ["id", "name"], "tests.Student", "student.json")
 
 
 # In[36]:
 
 
-to_json_file(school_data, ["id", "name"], "tests.School", "tests/fixtures/school.json")
+to_json_file(school_data, ["id", "name"], "tests.School", "school.json")
 
 
 # In[37]:
 
 
-to_json_file(subject_data, ["id", "name"], "tests.Subject", "tests/fixtures/subject.json")
+to_json_file(subject_data, ["id", "name"], "tests.Subject", "subject.json")
 
 
 # In[38]:
 
 
-to_json_file(assessment_area_data, ["id", "name"], "tests.AssessmentArea", "tests/fixtures/area.json")
+to_json_file(assessment_area_data, ["id", "name"], "tests.AssessmentArea", "area.json")
 
 
 # In[39]:
 
 
-to_json_file(class_data, ["id", "name"], "tests.Class", "tests/fixtures/class.json")
+to_json_file(class_data, ["id", "name"], "tests.Class", "class.json")
 
 
 # In[40]:
 
 
-to_json_file(list(filter(lambda x: not pd.isna(x[1]),award_data)), ["id", "name"], "tests.Award", "tests/fixtures/award.json")
+to_json_file(list(filter(lambda x: not pd.isna(x[1]),award_data)), ["id", "name"], "tests.Award", "award.json")
 
 
 # In[41]:
@@ -390,7 +412,37 @@ a = list(new_sub)
 # In[43]:
 
 
-to_json_file(a, ["id", "name","score"], "tests.Subject", "tests/fixtures/subject.json")
+to_json_file(a, ["id", "name","score"], "tests.Subject", "subject.json")
+
+
+# In[44]:
+
+
+data.info()
+
+
+# In[52]:
+
+
+data = data.drop(columns=["Subject Contents", "AnswerID", "CorrectAnswerID", "average_score", "sydney_correct_count_percentage"])
+
+
+# In[53]:
+
+
+data.info()
+
+
+# In[ ]:
+
+
+n = list(data.itertuples(name=None))
+
+
+# In[ ]:
+
+
+to_json_file(n, ["id", "student_id", "answer", "correct_answer", "question", "student_score", "participant", "correct_answer_percentage_per_class", "sydney_percentile", "year_lvl_name", "subject_id", "school_id", "award_id", "class_id", "assesment_area_id"], "tests.Summary", "summary.json")
 
 
 # In[ ]:
